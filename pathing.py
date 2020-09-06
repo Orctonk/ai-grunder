@@ -1,6 +1,4 @@
 import numpy as np
-import Robot
-from Path import Path
 
 def get_closest(pos, path):
     closest = path[0]
@@ -11,12 +9,12 @@ def get_closest(pos, path):
 
 def get_target(radius, pos, path):
     closest = get_closest(pos, path)
-    target = [np.nan, np.nan]
-    for point in path:
-        if (np.array_equal(target, [np.nan, np.nan]) and np.allclose(closest, point)):
-            target = point
-            continue
-
+    
+    index = 0
+    while not np.allclose(closest, path[index]):
+        index += 1
+    
+    for point in path[index:-1]:        
         target = point
         if np.linalg.norm(point - pos) > radius:
             break
