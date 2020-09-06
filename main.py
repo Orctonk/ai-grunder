@@ -1,12 +1,10 @@
 from Robot import *
 from Path import *
 from ShowPath import *
+from pathing import *
 
 # load a path file
-p = Path("Path-around-table.json")
-path = p.getPath()
-
-print(path)
+path = Path("Path-around-table.json").getPath()
 
 # plot the path
 sp = ShowPath(path)
@@ -17,20 +15,16 @@ print("First point = " + str(path[0][0]) + ", " + str(path[0][1]))
 # make a robot to move around
 robot = Robot()
 
-# move the robot
-robot.setMotion(0.2, 0.2)
-
-for i in range(10):
-    time.sleep(0.5)
-    print("pos, heading")
-    print(robot.getPosition())
-    print(robot.getHeading())
-
-    # Plot the current position and the look-ahead point:
-    look_ahead_point = [3+i/5,4+i/5] #just a dummy point that moves 
-    sp.update(robot.getPosition(), look_ahead_point)
-
-echoes = robot.getLaser()
-print(echoes)
+# robot.setMotion(0.2, 0)
+dist = float('inf')
+while dist > 0.01:
+    time.sleep(0.2)
+    pos = robot.getPosition()
+    heading = robot.getHeading()
+    target = get_target(0.5, pos, path)
+    dist = target_dist(pos, target)
+    ang = target_ang(pos, target, heading)    
+    robot.setMotion(dist / ((1 + abs(ang))) , ang * 2)
+    sp.update(pos, target)
 
 robot.setMotion(0, 0)
