@@ -42,3 +42,12 @@ def target_ang(pos, target, heading):
     ang = np.arccos(np.clip(np.dot(x_axis, vect_norm), -1.0, 1.0))
     ang -= abs(heading)
     return ang if target[1] > pos[1] else -ang
+
+def vector_to_robospace(robopos, roborot, vector):
+    originzero = vector - robopos
+    rotation = np.array([  [np.cos(roborot), np.sin(roborot)],
+                [np.sin(roborot),-np.cos(roborot)]])
+    return np.matmul(rotation,originzero)
+
+def target_turn_factor(robotarget):
+    return -(2 * robotarget[1]) / (robotarget[0] ** 2 + robotarget[1] ** 2) 
