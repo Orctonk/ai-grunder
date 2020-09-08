@@ -22,7 +22,7 @@ robot = Robot()
 # robot.setMotion(0.2, 0)
 dist = float('inf')
 while dist > 0.1:
-    time.sleep(0.2)
+    time.sleep(0.02)
     pos = robot.getPosition()
     heading = robot.getHeading()
     target = get_target(lookahead_dist, pos, path)
