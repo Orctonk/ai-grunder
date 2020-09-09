@@ -14,6 +14,9 @@ def get_target(radius, pos, path):
     """
     Get a target point in path that is approx radius distance ahead of pos.
     """
+    if "passed" not in get_target.__dict__:
+        get_target.passed = 0
+
     closest = get_closest(pos, path, get_target.passed)
     
     while not np.allclose(closest, path[get_target.passed]):
@@ -24,7 +27,6 @@ def get_target(radius, pos, path):
         if np.linalg.norm(point - pos) > radius:
             break
     return target
-get_target.passed = 0
 
 def target_dist(pos, target):
     """
