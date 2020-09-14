@@ -1,12 +1,15 @@
 import numpy as np
 
-def get_closest(pos, path, start_index = 0):
+def get_closest(radius, pos, path, start_index = 0):
     """
     Get the point in path closest to pos.
     """
     closest = path[start_index]
     for point in path[start_index + 1:-1]:
-        if np.linalg.norm(point - pos) < np.linalg.norm(closest - pos):
+        dist = np.linalg.norm(point - pos)
+        if dist > radius:
+            break
+        if dist < np.linalg.norm(closest - pos):
             closest = point
     return closest
 
@@ -17,7 +20,7 @@ def get_target(radius, pos, path):
     if "passed" not in get_target.__dict__:
         get_target.passed = 0
 
-    closest = get_closest(pos, path, get_target.passed)
+    closest = get_closest(radius, pos, path, get_target.passed)
     
     while not np.allclose(closest, path[get_target.passed]):
         get_target.passed += 1

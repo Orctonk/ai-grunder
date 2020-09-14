@@ -56,5 +56,5 @@ class Stopwatch:
 
 
 if __name__ == '__main__':
-    stopwatch = Stopwatch('exam2019.json')
+    stopwatch = Stopwatch('Path-around-table.json')
     stopwatch.run()
