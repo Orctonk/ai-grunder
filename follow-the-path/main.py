@@ -5,8 +5,8 @@ from pathing import *
 from avoidance import *
 
 # Best test, 1, 0.75
-lookahead_dist = 2
-speed_factor = 1.25
+lookahead_dist = 1
+speed_factor = 2
 
 # load a path file
 path = Path("Path-around-table.json").getPath()
@@ -30,8 +30,9 @@ while dist > 0.2:
     dist = target_dist(pos, target) 
     robotarget = vector_to_robospace(pos, heading, target)
     av = calculateAvoidanceVector(robotarget,robot.getLaser(),robot.getLaserAngles())
+    av *= lookahead_dist
     turnfactor = target_turn_factor(robotarget - av)  
-    speed = speed_factor / (1 + abs(turnfactor))
+    speed = speed_factor / (1 + abs(turnfactor) + np.linalg.norm(av))
     robot.setMotion(speed, speed * turnfactor)
     av = vector_to_robospace(np.array([0,0]),-heading,av)
     sp.update(pos, target - av)
