@@ -1,49 +1,34 @@
 import numpy as np
+from layer import Layer
+from loss import *
 
-def read_labels(path):
-    file = open(path,"r")
+class ANN():
+    def __init__(self, inputsize):
+        self.layers = []
+        self.lastsize = inputsize
+        self.inputsize = inputsize
 
-    reading_labels = False
+    def add_layer(self, size, activation='relu'):
+        self.layers.append(Layer(size,self.lastsize,activation))
+        self.lastsize = size
 
-    labels = []
+    def eval(self, inputarr):
+        out = inputarr
+        for l in self.layers:
+            out = l.eval(out)
 
-    for l in file:
-        if l.strip()[0] == '#':
-            continue
-        if reading_labels:
-            labels.append(l[0])
-        else:
-            reading_labels = True
-    
-    file.close()
+        return out 
 
-    return np.array(labels)
+    def test(self,data,labels):
+        output = self.eval(data)
+        return categorical_crossentropy(output,labels)
 
-def read_images(path):
-    file = open(path,"r")
+    def train(self,data,labels,epochs):
+        for e in range(1,epochs+1):
+            loss = self.test(data,labels)
+            loss_per_data = loss.sum(1)
+            epoch_loss = loss_per_data.sum() / loss_per_data.size
+            print("Epoch {}: Loss = {}, Accuracy = {}".format(e,epoch_loss,'?'))
+        pass
 
-    reading_images = False
-
-    images = []
-
-    for l in file:
-        if l.strip()[0] == '#':
-            continue
-        if reading_images:
-            images.append(l.split())
-        else:
-            reading_images = True
-
-    file.close()
-
-    return np.array(images)
-
-def load_data():
-    traini = read_images("data/training-images.txt")
-    testi = read_images("data/validation-images.txt")
-
-    trainl = read_labels("data/training-labels.txt")
-    testl = read_labels("data/validation-labels.txt")
-
-    return (traini,trainl,testi,testl)
 
