@@ -59,3 +59,7 @@ def labels_to_1_hot(labels):
     labels_ohv[np.arange(labels.size),labels] = 1
     return labels_ohv
 
+def calculate_accuracy(target,classifications):
+    accuracy_arr = np.zeros(target.shape)
+    accuracy_arr[target==classifications] = 1
+    return accuracy_arr.sum() / accuracy_arr.size
