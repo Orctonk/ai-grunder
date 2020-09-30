@@ -45,5 +45,17 @@ def load_data():
     trainl = read_labels("data/training-labels.txt")
     testl = read_labels("data/validation-labels.txt")
 
+    traini = traini.astype(float) / 255
+    testi = testi.astype(float) / 255
+    trainl = trainl.astype(int)
+    testl = testl.astype(int)
+
     return (traini,trainl,testi,testl)
+
+def labels_to_1_hot(labels):
+    # Process labels to 1-hot form
+    # see https://stackoverflow.com/questions/29831489/convert-array-of-indices-to-1-hot-encoded-numpy-array
+    labels_ohv = np.zeros((labels.size,labels.max()+1))
+    labels_ohv[np.arange(labels.size),labels] = 1
+    return labels_ohv
 

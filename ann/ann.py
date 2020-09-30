@@ -19,16 +19,25 @@ class ANN():
 
         return out 
 
+    def backpropagate(self, cost_deriv):
+        last_deriv = cost_deriv
+        for l in self.layers[-1::-1]:
+            (last_deriv,_,_) = l.backpropagate(last_deriv)
+
     def test(self,data,labels):
         output = self.eval(data)
         return categorical_crossentropy(output,labels)
 
     def train(self,data,labels,epochs):
         for e in range(1,epochs+1):
-            loss = self.test(data,labels)
+            output = self.eval(data)
+            loss = categorical_crossentropy(output,labels)
             loss_per_data = loss.sum(1)
             epoch_loss = loss_per_data.sum() / loss_per_data.size
-            print("Epoch {}: Loss = {}, Accuracy = {}".format(e,epoch_loss,'?'))
+            print("Epoch {}: Loss = {}".format(e,epoch_loss))
+            cost_deriv = cc_deriv(output,labels)
+            self.backpropagate(cost_deriv)
+
         pass
 
 
