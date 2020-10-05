@@ -11,6 +11,20 @@ def relu_deriv(inp):
     out[:,np.arange(n),np.arange(n)] = inp
     return out
 
+def leaky_relu(inp):
+    out = np.zeros_like(inp)
+    out[inp>=0] = inp[inp>=0]
+    out[inp<0] = inp[inp<0]
+    return out
+
+def leaky_relu_deriv(inp):
+    inp[inp<0] = 0.01
+    inp[inp>=0] = 1
+    n = inp.shape[1]
+    out = np.zeros((inp.shape[0],n,n))
+    out[:,np.arange(n),np.arange(n)] = inp
+    return out
+
 def sigmoid(inp):
     return np.where(inp >= 0, 
         1 / (1 + np.exp(-inp)), 
@@ -39,5 +53,5 @@ def tanh(inp):
 def tanh_deriv(inp):
     n = inp.shape[1]
     out = np.zeros((inp.shape[0],n,n))
-    out[:,np.arange(n),np.arange(n)] = 1 - np.power(np.tanh(inp),2)
+    out[:,np.arange(n),np.arange(n)] = 1 - np.tanh(inp) ** 2
     return out
