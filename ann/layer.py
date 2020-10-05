@@ -39,15 +39,15 @@ class Layer():
         self.last_raw = (np.dot(self.last_activation,(self.weights)) + self.biases).reshape(-1,self.size)
         return self.activation(self.last_raw)
 
-    def backpropagate(self, last_derivs, loss):
+    def backpropagate(self, last_derivs, loss, learning_rate):
         last_derivs = last_derivs.reshape(-1,1,self.size)
         
         bias_derivs = np.matmul(last_derivs, self.activation_deriv(self.last_raw))
         weight_derivs = np.matmul(self.last_activation.transpose(0,2,1),bias_derivs)
         last_activation_derivs = np.matmul(bias_derivs, self.weights.transpose())
 
-        self.weights -= np.average((loss/5)[:,None,None] * weight_derivs, 0)
-        self.biases -= np.average((loss/5)[:,None,None] * bias_derivs, 0)[0]
+        self.weights -= np.average((loss*learning_rate)[:,None,None] * weight_derivs, 0)
+        self.biases -= np.average((loss*learning_rate)[:,None,None] * bias_derivs, 0)[0]
 
         return (last_activation_derivs,weight_derivs,bias_derivs)
 

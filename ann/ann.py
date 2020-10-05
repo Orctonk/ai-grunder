@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from layer import Layer
 from loss import *
 
@@ -28,16 +29,17 @@ class ANN():
 
         return out 
 
-    def backpropagate(self, cost_deriv,loss):
+    def backpropagate(self, cost_deriv,loss,learning_rate):
         last_deriv = cost_deriv
         for l in self.layers[-1::-1]:
-            (last_deriv,_,_) = l.backpropagate(last_deriv,loss)
+            (last_deriv,_,_) = l.backpropagate(last_deriv,loss,learning_rate)
 
     def test(self,data,labels):
         output = self.eval(data)
         return self.loss(output,labels)
 
-    def train(self,data,labels,epochs,batch_size=100):
+    def train(self,data,labels,epochs,batch_size=100, learing_rate=0.2):
+        start = time.perf_counter()
         batch_count = np.math.ceil(data.shape[0]/batch_size)
         for e in range(1,epochs+1):
             epoch_loss = 0
@@ -47,9 +49,11 @@ class ANN():
                 output = self.eval(batch_data)
                 loss = self.loss(output,batch_labels)
                 cost_deriv = self.loss_deriv(output,batch_labels)
-                self.backpropagate(cost_deriv,loss)
+                self.backpropagate(cost_deriv,loss,learing_rate)
                 epoch_loss += loss.sum() / loss.size
-            print("Epoch {}: Loss = {}".format(e,epoch_loss/batch_count))
+            elapsed = time.perf_counter() - start
+            print(f"\rElapsed time {elapsed:.1f}s, Epoch {e}: Loss = {epoch_loss/batch_count:.6f}",end="")
+        print("")
 
         pass
 
