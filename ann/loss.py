@@ -7,7 +7,7 @@ def cc_deriv(output,target):
     return -np.divide(target,output)
 
 def mean_square_error(output,target):
-    return np.power(np.subtract(output,target),2)
+    return np.average(np.power(np.subtract(output,target),2),1)
 
 def mse_deriv(output,target):
     return -2*target + 2*output
