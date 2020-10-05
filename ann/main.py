@@ -8,8 +8,8 @@ def main():
     train_labels_ohv = labels_to_1_hot(train_labels)
 
     network = ANN(784, 'mean_square_error')
-    network.add_layer(3)
-    network.add_layer(3)
+    network.add_layer(3,'leaky_relu')
+    network.add_layer(3,'leaky_relu')
     network.add_layer(10, 'tanh')
 
     test_out = network.eval(test_images)
@@ -18,7 +18,7 @@ def main():
     print("Test accuracy: {}%".format(test_accuracy * 100))
     print_class_count(test_out)
 
-    network.train(train_images,train_labels_ohv,100,10)
+    network.train(train_images,train_labels_ohv,1000,100,0.15)
 
     test_out = network.eval(test_images)
 
