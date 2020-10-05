@@ -63,3 +63,8 @@ def calculate_accuracy(target,classifications):
     accuracy_arr = np.zeros(target.shape)
     accuracy_arr[target==classifications] = 1
     return accuracy_arr.sum() / accuracy_arr.size
+
+def print_class_count(classifications):
+    class_count = np.zeros_like(classifications)
+    class_count[np.arange(class_count.shape[0]),classifications.argmax(1)] = 1.0
+    print(class_count.sum(0))
