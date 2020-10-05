@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from ann import ANN
 from util import *
 from layer import Layer
@@ -18,7 +19,11 @@ def main():
     print("Test accuracy: {}%".format(test_accuracy * 100))
     print_class_count(test_out)
 
-    network.train(train_images,train_labels_ohv,1000,100,0.15)
+    loss = network.train(train_images,train_labels_ohv,1000,10,0.15)
+    xaxis = [x for x in range(1000)]
+
+    plt.plot(xaxis,loss)
+    plt.show()
 
     test_out = network.eval(test_images)
 

@@ -41,6 +41,7 @@ class ANN():
     def train(self,data,labels,epochs,batch_size=100, learing_rate=0.2):
         start = time.perf_counter()
         batch_count = np.math.ceil(data.shape[0]/batch_size)
+        loss_history = []
         for e in range(1,epochs+1):
             epoch_loss = 0
             for i in range(batch_count):
@@ -52,9 +53,9 @@ class ANN():
                 self.backpropagate(cost_deriv,loss,learing_rate)
                 epoch_loss += loss.sum() / loss.size
             elapsed = time.perf_counter() - start
+            loss_history.append(epoch_loss/batch_count)
             print(f"\rElapsed time {elapsed:.1f}s, Epoch {e}: Loss = {epoch_loss/batch_count:.6f}",end="")
         print("")
-
-        pass
+        return np.array(loss_history)
 
 
