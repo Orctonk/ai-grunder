@@ -37,15 +37,19 @@ class ANN():
         output = self.eval(data)
         return self.loss(output,labels)
 
-    def train(self,data,labels,epochs):
+    def train(self,data,labels,epochs,batch_size=100):
+        batch_count = np.math.ceil(data.shape[0]/batch_size)
         for e in range(1,epochs+1):
-            output = self.eval(data)
-            loss = self.loss(output,labels)
-            loss_per_data = loss.sum(1)
-            epoch_loss = loss_per_data.sum() / loss_per_data.size
-            print("Epoch {}: Loss = {}".format(e,epoch_loss))
-            cost_deriv = self.loss_deriv(output,labels)
-            self.backpropagate(cost_deriv,loss_per_data)
+            epoch_loss = 0
+            for i in range(batch_count):
+                batch_data = data[i*batch_size:(i+1)*batch_size]
+                batch_labels = labels[i*batch_size:(i+1)*batch_size]
+                output = self.eval(batch_data)
+                loss = self.loss(output,batch_labels)
+                cost_deriv = self.loss_deriv(output,batch_labels)
+                self.backpropagate(cost_deriv,loss)
+                epoch_loss += loss.sum() / loss.size
+            print("Epoch {}: Loss = {}".format(e,epoch_loss/batch_count))
 
         pass
 
