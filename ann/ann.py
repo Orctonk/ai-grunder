@@ -4,7 +4,7 @@ from layer import Layer
 from loss import *
 
 class ANN():
-    def __init__(self, inputsize, loss = 'categorical_crossentropy', loss_deriv = None, regularization='L2', regularization_deriv=None, lambd=0.001):
+    def __init__(self, inputsize, loss = 'categorical_crossentropy', loss_deriv = None, regularization=None, regularization_deriv=None, lambd=0.001):
         self.layers = []
         self.lastsize = inputsize
         self.inputsize = inputsize
