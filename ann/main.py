@@ -16,13 +16,15 @@ def main():
 
     test_accuracy = calculate_accuracy(test_labels,test_out.argmax(1))
     print("Test accuracy: {}%".format(test_accuracy * 100))
+    print_class_count(test_out)
 
-    network.train(train_images,train_labels_ohv,100)
+    network.train(train_images,train_labels_ohv,100,10)
 
     test_out = network.eval(test_images)
 
     test_accuracy = calculate_accuracy(test_labels,test_out.argmax(1))
     print("Test accuracy: {}%".format(test_accuracy * 100))
+    print_class_count(test_out)
     
 
 if __name__ == "__main__":
