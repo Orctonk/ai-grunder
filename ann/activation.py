@@ -1,7 +1,7 @@
 import numpy as np
 
 def relu(inp):
-    return np.maximum(np.zeros(np.shape(inp)),inp)
+    return np.maximum(inp,0)
 
 def relu_deriv(inp):
     inp[inp<0] = 0
@@ -26,15 +26,13 @@ def leaky_relu_deriv(inp):
     return out
 
 def sigmoid(inp):
-    return np.where(inp >= 0, 
-        1 / (1 + np.exp(-inp)), 
-        np.exp(inp) / (1 + np.exp(inp)))
+    return 1 / (1 + np.exp(-inp)) 
 
 def sigmoid_deriv(inp):
-    expterm = np.exp(inp)
+    f = sigmoid(inp)
     n = inp.shape[1]
     out = np.zeros((inp.shape[0],n,n))
-    out[:,np.arange(n),np.arange(n)] = expterm / (1 + expterm) ** 2
+    out[:,np.arange(n),np.arange(n)] = np.multiply(f,(1 - f))
     return out
 
 def softmax(inp):
