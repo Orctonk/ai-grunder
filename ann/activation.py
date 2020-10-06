@@ -14,11 +14,11 @@ def relu_deriv(inp):
 def leaky_relu(inp):
     out = np.zeros_like(inp)
     out[inp>=0] = inp[inp>=0]
-    out[inp<0] = inp[inp<0]
+    out[inp<0] = inp[inp<0] * 0.1
     return out
 
 def leaky_relu_deriv(inp):
-    inp[inp<0] = 0.01
+    inp[inp<0] = 0.1
     inp[inp>=0] = 1
     n = inp.shape[1]
     out = np.zeros((inp.shape[0],n,n))
@@ -36,14 +36,20 @@ def sigmoid_deriv(inp):
     return out
 
 def softmax(inp):
-    expterm = np.exp(inp)
+    shiftinp = inp / np.amax(inp,1)[:,None]
+    expterm = np.exp(shiftinp)
     return expterm / np.sum(expterm,1)[:,None] # https://stackoverflow.com/questions/16202348/numpy-divide-row-by-row-sum
 
 def softmax_deriv(inp):
-    inp3d = np.atleast_3d(inp)
-    inp3d = inp3d.reshape(inp3d.shape[0],1,inp.shape[-1])
+
+    n = inp.shape[1]
+    out = np.zeros((inp.shape[0],n,n))
+    for i in range(out.shape[0]):
+        reshaped = inp[i].reshape(-1,n)
+        Sz = softmax(reshaped).reshape(n)
+        out[i] = -np.outer(Sz, Sz) + np.diag(Sz.flatten())
     
-    pass
+    return out
 
 def tanh(inp):
     return np.tanh(inp)

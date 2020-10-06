@@ -1,7 +1,7 @@
 import numpy as np
 
 def categorical_crossentropy(output,target):
-    return -np.multiply(target,np.log(output))
+    return -np.multiply(target,np.log(output+1e-9)).sum(1)
 
 def cc_deriv(output,target):
     return -np.divide(target,output)
