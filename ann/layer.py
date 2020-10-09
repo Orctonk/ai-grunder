@@ -2,29 +2,17 @@ import numpy as np
 from activation import *
 
 class Layer():
-    def __init__(self,size,prevsize, activation = 'relu', activation_deriv = None):
+    def __init__(self,size,prevsize, activation = 'leaky_relu', activation_deriv = None):
         self.size = size
         self.prevsize = prevsize
         
         self.biases = np.zeros(size)
 
         # Initializing weights randomly based on https://towardsdatascience.com/weight-initialization-techniques-in-neural-networks-26c649eb3b78
-        if activation == 'relu':
-            self.activation = relu
-            self.activation_deriv = relu_deriv
-            self.weights = np.random.randn(prevsize,size) * np.sqrt(2/prevsize)
-        elif activation == 'leaky_relu':
+        if activation == 'leaky_relu':
             self.activation = leaky_relu
             self.activation_deriv = leaky_relu_deriv
             self.weights = np.random.randn(prevsize,size) * np.sqrt(2/prevsize)
-        elif activation == 'softmax':
-            self.activation = softmax
-            self.activation_deriv = softmax_deriv
-            self.weights = np.random.randn(prevsize,size) * np.sqrt(2/(prevsize+size))
-        elif activation == 'sigmoid':
-            self.activation = sigmoid
-            self.activation_deriv = sigmoid_deriv
-            self.weights = np.random.randn(prevsize,size) * np.sqrt(2/(prevsize+size))
         elif activation == 'tanh':
             self.activation = tanh
             self.activation_deriv = tanh_deriv
