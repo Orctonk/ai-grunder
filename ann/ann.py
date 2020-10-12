@@ -28,14 +28,10 @@ class ANN():
         Parameters
         ----------
         inputsize: The size of the input layer
-
         loss: The loss function to be used when training the network
-
         loss_deriv: The derivative of the loss function with respect to each output, 
             is only needed if custom loss is used
-
         regularization: The regularization method used when training the network, optional.
-
         regularization_deriv: The derivative of the regularization function used, 
             only needed if custom regularization is used.
 
@@ -73,7 +69,6 @@ class ANN():
         Parameters
         ----------
         size: The amount of neurons in the layer.
-
         activation: The activation function used by this layer, 
             valid predefined strings are 'leaky_relu' and 'tanh'.
 
@@ -87,7 +82,7 @@ class ANN():
         
         Parameters
         ----------
-        inputarr: The input to pass through the network
+        inputarr: The input to pass through the network.
         
         Return
         ------
@@ -104,40 +99,42 @@ class ANN():
 
         Parameters
         ----------
-        cost_deriv: The derivative of the cost excluding regularization with respect to the outputs
-
-        loss: The calculated loss of the output
-
-        learning_rate: The current learning rate of the network
+        cost_deriv: The derivative of the cost excluding regularization with respect to the outputs.
+        loss: The calculated loss of the output.
+        learning_rate: The current learning rate of the network.
         """
         last_deriv = cost_deriv
         for l in self.layers[-1::-1]:
             (last_deriv,_,_) = l.backpropagate(last_deriv,loss,learning_rate)
             l.weights -= learning_rate * self.regularization_deriv(l.weights,self.lambd)
 
-    def train(self,data,labels,epochs,batch_size=100, learing_rate=0.1, decay=0, print_progress=False):
+    def train(self,data,labels,epochs,batch_size=100, learing_rate=0.1, decay=0, print_progress=False, test_data=None, test_labels=None, test_accuracy=None):
         """Trains the network using backpropagation and Gradient Descent
 
         Parameters
         ----------
         data: The training data
-
-        labels: The training labels
-
-        epochs: The amount of iterations for which to run training
-
-        batch_size: The size of each batch of training data
-
+        labels: The training labels.
+        epochs: The amount of iterations for which to run training.
+        batch_size: The size of each batch of training data.
         learning_rate: A factor with which the gradient is multiplied before
-            network parameters are updated
+            network parameters are updated.
+        decay: The rate at which the learning rate decays with each epoch.
+        print_progress: Whether or not to print training progress.
+        test_data: Data to test the network on as it is trained.
+        test_labels: Labels to compare test output with.
+        test_accuracy: Function which calculates the accuracy of the test classification
 
-        decay: The rate at which the learning rate decays with each epoch
-
-        print_progress: Whether or not to print training progress
+        Return
+        ------
+        A 3-tuple containing the training loss, test loss and test accuracy for each epoch.
         """
         start = time.perf_counter()
         batch_count = np.math.ceil(data.shape[0]/batch_size)
-        loss_history = []
+        train_loss_history = []
+        test_loss_history = []
+        test_accuracy_history = []
+        train_accuracy_history = []
         for e in range(1,epochs+1):
             epoch_loss = 0
             for i in range(batch_count):
@@ -164,12 +161,20 @@ class ANN():
             learing_rate = learing_rate * (1/(1 + e*decay))
 
             # Record loss
-            loss_history.append(epoch_loss/batch_count)
+            train_loss_history.append(epoch_loss/batch_count)
             if print_progress:
                 elapsed = time.perf_counter() - start
                 print(f"\rElapsed time {elapsed:.1f}s, Epoch {e}: Loss = {epoch_loss/batch_count:.6f}",end="")
+            if not test_data is None and not test_labels is None:
+                test_output = self.eval(test_data)
+                test_loss = self.loss(test_output,test_labels) + self.regularization(weights,self.lambd)
+                test_loss_history.append(test_loss.sum()/test_loss.size)
+                if test_accuracy != None:
+                    train_output = self.eval(data)
+                    test_accuracy_history.append(test_accuracy(test_output,test_labels))
+                    train_accuracy_history.append(test_accuracy(train_output,labels))
         if print_progress:
             print("")
-        return np.array(loss_history)
+        return (np.array(train_loss_history),np.array(test_loss_history), np.array(train_accuracy_history), np.array(test_accuracy_history))
 
 

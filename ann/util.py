@@ -77,8 +77,8 @@ def load_data(traini_path,trainl_path,testi_path,testl_path=None):
 
     trainl = read_labels(trainl_path)
     testl = None
-    if testl_path != None:
-        testl = read_labels("data/validation-labels.txt")
+    if not testl_path is None:
+        testl = read_labels(testl_path)
         testl = testl.astype(int)
 
     traini = traini.astype(float) / 255
@@ -105,13 +105,13 @@ def labels_to_1_hot(labels):
     return labels_ohv
 
 def calculate_accuracy(target,classifications):
-    """Calculates the accuracy of the classifications.
+    """Calculates the accuracy of the classifications. Inputs are in 1-hot form.
 
     Parameters
     ----------
     target: The target classifications.
     classification: The ANN classifications
     """
-    accuracy_arr = np.zeros(target.shape)
-    accuracy_arr[target==classifications] = 1
+    accuracy_arr = np.zeros(target.shape[0])
+    accuracy_arr[target.argmax(1)==classifications.argmax(1)] = 1
     return accuracy_arr.sum() / accuracy_arr.size
