@@ -35,9 +35,29 @@ def leaky_relu_deriv(inp):
     return out
 
 def tanh(inp):
+    """Calcualtes the elementwise hyperbolic tangents
+
+    Parameters
+    ----------
+    inp: The logits to perform the activation on
+
+    Return
+    ------
+    The result of the activation function
+    """
     return np.tanh(inp)
 
 def tanh_deriv(inp):
+    """Calculates the derivative of the tanhactivation function
+
+    Parameters
+    ----------
+    inp: The logits used for the activation
+
+    Return
+    ------
+    The Jacobian for the tanh function for the last logits
+    """
     n = inp.shape[1]
     out = np.zeros((inp.shape[0],n,n))
     out[:,np.arange(n),np.arange(n)] = 1 - np.tanh(inp) ** 2

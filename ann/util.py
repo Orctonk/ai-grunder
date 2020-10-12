@@ -38,17 +38,19 @@ def read_images(path):
 
     return np.array(images)
 
-def load_data():
-    traini = read_images("data/training-images.txt")
-    testi = read_images("data/validation-images.txt")
+def load_data(traini_path,trainl_path,testi_path,testl_path=None):
+    traini = read_images(traini_path)
+    testi = read_images(testi_path)
 
-    trainl = read_labels("data/training-labels.txt")
-    testl = read_labels("data/validation-labels.txt")
+    trainl = read_labels(trainl_path)
+    testl = None
+    if testl_path != None:
+        testl = read_labels("data/validation-labels.txt")
+        testl = testl.astype(int)
 
     traini = traini.astype(float) / 255
     testi = testi.astype(float) / 255
     trainl = trainl.astype(int)
-    testl = testl.astype(int)
 
     return (traini,trainl,testi,testl)
 
