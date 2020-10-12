@@ -5,7 +5,7 @@ from ann import ANN
 from util import *
 from layer import Layer
 
-devel = True
+devel = False
 
 def main():
     if len(sys.argv) != 4:
